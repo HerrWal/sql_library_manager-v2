@@ -1,0 +1,12 @@
+On Node PC: 
+
+Resolved an issue that stemmed from a version mismach between Node.js and npm. The terminal showed errors indicating that npm v10.2.5 was incompatible with an older Node.js version (v10.19.0), even though the desired version of Node.js (v20.10.0) was installed via nvm. This led to permission issues and unexpected token errors when attempting to use npm.
+
+Solution:
+
+    1- Remove the global npm installation: Manually deleted the npm directory from /usr/local/lib/node_modules/.
+    2- Switch Node.js versions: Used nvm to temporarily switch to a different version (v18.17.0) to allow the uninstallation of v20.10.0.
+    3- Reinstall Node.js: Uninstalled and then reinstalled Node.js v20.10.0 using nvm.
+    4- Update npm: Installed the latest version of npm via the command npm install -g npm@latest.
+
+This resolved the issues, aligning the Node.js and npm installations properly.
