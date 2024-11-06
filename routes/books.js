@@ -18,23 +18,34 @@ function asyncHandler(cb) {
 // Full list of books with optional search
 router.get('/', asyncHandler(async(req, res) => {
   const { query } = req.query;
-  let books;
-  if (query) {
-    books = await Book.findAll({
-      where: {
-        [Op.or]: [
-          { title: { [Op.like]: `%${query}%` } },
-          { author: { [Op.like]: `%${query}%` } },
-          { genre: { [Op.like]: `%${query}%` } },
-          { year: { [Op.like]: `%${query}%` } }
-        ]
-      }
-    });
-  } else {
-      books = await Book.findAll();
-  }
+  const page = parseInt(req.query.page) || 1;
+  const limit = 5;
+  const offset = (page - 1) * limit;
+  
+  const whereCondition = query ? {      
+    [Op.or]: [
+      { title: { [Op.like]: `%${query}%` } },
+      { author: { [Op.like]: `%${query}%` } },
+      { genre: { [Op.like]: `%${query}%` } },
+      { year: { [Op.like]: `%${query}%` } }
+    ]   
+  } : {};
 
-  res.render('index', { books, title: 'Books'});  
+  const { count, rows: books } = await Book.findAndCountAll({
+    where: whereCondition,
+    limit,
+    offset
+  });
+  
+  const totalPages = Math.ceil(count / limit);
+
+  res.render('index', {
+    books,
+    title: 'Books',
+    totalPages,
+    currentpage: page,
+    query
+  });
 }));
 
 // New Book 
@@ -60,9 +71,15 @@ router.post('/new', asyncHandler(async(req, res) => {
 }));
 
 // Book Detail
-router.get('/:id', asyncHandler(async(req, res) => {
+router.get('/:id', asyncHandler(async(req, res, next) => {
   const book = await Book.findByPk(req.params.id);
+  if (book) {
     res.render('update-book', { book, title: 'Book Details' });  
+  } else {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err);
+  }    
 }));
 
 // Update Book

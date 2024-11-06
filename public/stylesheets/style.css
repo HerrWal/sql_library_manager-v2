@@ -137,3 +137,30 @@ form.search-form button {
 form.search-form button:hover {
   background-color: #01b189;
 }
+
+/* Pagination styling */
+.pagination {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination a {
+  color: #019875;
+  text-decoration: none;
+  padding: 8px 12px;
+  border: 1px solid #e7e7e7;
+  border-radius: 3px;
+  transition: 0.3s;
+}
+
+.pagination a.active {
+  background-color: #019875;
+  color: white;
+}
+
+.pagination a:hover {
+  background-color: #01b189;
+  color: white;
+}

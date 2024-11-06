@@ -24,3 +24,17 @@ block content
             td= book.author
             td= book.genre 
             td= book.year
+
+    if totalPages > 1
+      nav.pagination
+        if currentPage > 1
+          a(href=`?page=${currentPage - 1}&query=${query || ''}`) Previous
+
+        each pageNumber in [...Array(totalPages).keys()].map(n => n + 1)
+          a(
+            href=`?page=${pageNumber}&query=${query || ''}`
+            class=(pageNumber === currentPage ? 'active' : '')
+          )= pageNumber 
+
+        if currentPage < totalPages 
+          a(href=`?page=${currentPage + 1}&query=${query || ''}`) Next
